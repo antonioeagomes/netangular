@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend.Data;
+using Backend.Interfaces;
+using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Extensions;
@@ -20,6 +22,13 @@ public static class ApplicationServiceExtensions
                 options.UseSqlite(connStr);
 
             });
+
+        return services;
+    }
+
+     public static IServiceCollection AddDependencyInjections(this IServiceCollection services)
+    {
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }
