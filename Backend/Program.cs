@@ -1,4 +1,7 @@
+using System.Text;
 using Backend.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,8 @@ builder.Services.AddDependencyInjections();
 
 builder.Services.AddControllers();
 builder.Services.AddCors();
+
+builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,6 +33,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
