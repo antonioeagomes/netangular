@@ -1,47 +1,50 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-  <div class="container">
-    <a class="navbar-brand" routerLink='/' routerLinkActive='active'>Net Angular App</a>
+<header style="padding-bottom: 60px;">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+    <div class="container">
+      <a class="navbar-brand" routerLink='/' routerLinkActive='active'>Net Angular App</a>
 
-    <ul class="navbar-nav me-auto">
-      <ng-container *ngIf="isLoggedIn">
-        <li class="nav-item">
-          <a class="nav-link" routerLink='/members' routerLinkActive='active'>Matches</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink='/lists' routerLinkActive='active'>Lists</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink='/messages' routerLinkActive='active'>Messages</a>
-        </li>
-        <li *appHasRole='["Admin", "Moderator"]' class="nav-item">
-          <a class="nav-link" routerLink='/admin' routerLinkActive='active'>Admin</a>
-        </li>
-      </ng-container>
-      <!-- <li class="nav-item">
+      <ul class="navbar-nav me-auto">
+        <ng-container *ngIf="accountService.currentUser$ | async">
+          <li class="nav-item">
+            <a class="nav-link" routerLink='/members' routerLinkActive='active'>Matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink='/lists' routerLinkActive='active'>Lists</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink='/messages' routerLinkActive='active'>Messages</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink='/admin' routerLinkActive='active'>Admin</a>
+          </li>
+        </ng-container>
+        <!-- <li class="nav-item">
                 <a class="nav-link" routerLink='/errors'routerLinkActive='active' >Errors</a>
             </li> -->
-    </ul>
-    
-    <div *ngIf="isLoggedIn" class="btn-group" dropdown>
-      <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-        aria-controls="dropdown-basic">
-        Welcome user <span class="caret"></span>
-      </button>
-      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu mt-2" role="menu" aria-labelledby="button-basic">
-        <li role="menuitem"><a class="dropdown-item" href="#">Edit profile</a></li>
-        <li class="divider dropdown-divider"></li>
-        <li role="menuitem"><a class="dropdown-item" (click)="logout()">Logout</a>
-        </li>
       </ul>
+
+      <div *ngIf="accountService.currentUser$ | async" class="btn-group" dropdown>
+        <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+          aria-controls="dropdown-basic">
+          Welcome user <span class="caret"></span>
+        </button>
+        <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu mt-2" role="menu" aria-labelledby="button-basic">
+          <li role="menuitem"><a class="dropdown-item" href="#">Edit profile</a></li>
+          <li class="divider dropdown-divider"></li>
+          <li role="menuitem"><a class="dropdown-item" (click)="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <form *ngIf="!(accountService.currentUser$ | async)" #loginForm="ngForm" class="d-flex mt-2 mt-md-0"
+        (ngSubmit)="login()" autocomplete="off">
+        <input name="username" [(ngModel)]="model.username" class="form-control me-sm-2" type="text"
+          placeholder="Username">
+        <input name="password" [(ngModel)]="model.password" class="form-control me-sm-2" type="password"
+          placeholder="Password">
+        <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
+      </form>
     </div>
 
-    <form *ngIf="!isLoggedIn" #loginForm="ngForm" class="d-flex mt-2 mt-md-0" (ngSubmit)="login()" autocomplete="off">
-      <input name="username" [(ngModel)]="model.username" class="form-control me-sm-2" type="text"
-        placeholder="Username">
-      <input name="password" [(ngModel)]="model.password" class="form-control me-sm-2" type="password"
-        placeholder="Password">
-      <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
-    </form>
-  </div>
-
-</nav>
+  </nav>
+</header>
