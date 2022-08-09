@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.Data;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,12 +27,15 @@ public static class ApplicationServiceExtensions
 
             });
 
+        services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+
         return services;
     }
 
     public static IServiceCollection AddDependencyInjections(this IServiceCollection services)
     {
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
