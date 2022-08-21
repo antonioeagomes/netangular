@@ -9,17 +9,18 @@ using Backend.Extensions;
 
 namespace Backend.Helpers;
 
-    public class AutoMapperProfiles : Profile
+public class AutoMapperProfiles : Profile
 {
-    public AutoMapperProfiles() 
+    public AutoMapperProfiles()
     {
         CreateMap<AppUser, MemberDTO>()
-            .ForMember(dest => dest.PhotoUrl, 
+            .ForMember(dest => dest.PhotoUrl,
                 opt => opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url))
-            .ForMember(dest => dest.Age, 
+            .ForMember(dest => dest.Age,
                 opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
-                        
+
         CreateMap<Photo, PhotoDto>();
-     }
+        CreateMap<MemberUpdateDTO, AppUser>();
+    }
 
 }
