@@ -13,3 +13,7 @@
     background-color: #fff;
     border-top: none;
 }
+
+.btn-block {
+    width: 100% !important;
+}

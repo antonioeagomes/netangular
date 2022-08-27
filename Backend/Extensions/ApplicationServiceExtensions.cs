@@ -17,6 +17,9 @@ public static class ApplicationServiceExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
+
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+
         services.AddDbContext<DataContext>(options =>
             {
                 // var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -36,6 +39,7 @@ public static class ApplicationServiceExtensions
     {
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPhotoService, PhotoService>();
 
         return services;
     }

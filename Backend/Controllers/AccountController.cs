@@ -54,7 +54,7 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserDTO>> Login(UserToLoginDTO userToLogin)
     {
 
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == userToLogin.Username.ToLower());
+        var user = await _context.Users.Include(p => p.Photos).SingleOrDefaultAsync(u => u.UserName == userToLogin.Username.ToLower());
 
         if (user == null) return Unauthorized("Invalid username or password");
 
@@ -67,11 +67,12 @@ public class AccountController : BaseApiController
             if (computeHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid username or password");
         }
 
-        return Ok( new UserDTO
-            {
-                Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
-            });
+        return Ok(new UserDTO
+        {
+            Username = user.UserName,
+            Token = _tokenService.CreateToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
+        });
 
     }
 

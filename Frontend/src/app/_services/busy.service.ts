@@ -12,8 +12,8 @@ export class BusyService {
   busy() {
     this.busyRequestCount++;
     this.spinner.show(undefined, {
-      type: 'pacman',
-      bdColor: 'rgba(255,255,255,0)',
+      type: 'ball-8bits',
+      bdColor: 'rgba(255,255,255,0.8)',
       color: '#333333',
       size: 'medium'
     })

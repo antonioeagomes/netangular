@@ -32,7 +32,7 @@ public class UserRepository : IUserRepository
                 .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider).ToListAsync();
 
     public async Task<AppUser> GetUserByIdAsync(int id) => await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-    public async Task<AppUser> GetUserByUsernameAsync(string username) => await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+    public async Task<AppUser> GetUserByUsernameAsync(string username) => await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.UserName == username);
     public async Task<IEnumerable<AppUser>> GetUsersAsync() => await _context.Users.ToListAsync();
     public async Task<bool> SaveAllAsync() => await _context.SaveChangesAsync() > 0;
     public void Update(AppUser user) => _context.Entry(user).State = EntityState.Modified;
