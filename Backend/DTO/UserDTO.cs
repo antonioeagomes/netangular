@@ -13,6 +13,19 @@ public class UserToRegisterDTO
 
     [Required]
     public string Password { get; set; }
+
+    [Required]
+    public string KnownAs { get; set; }
+
+    [Required]
+    public DateTime DateOfBirth { get; set; }
+
+    [Required]
+    public string City { get; set; }
+
+    [Required]
+    public string Country { get; set; }
+
 }
 
 public class UserToLoginDTO
@@ -28,5 +41,6 @@ public class UserDTO
     public string Token { get; set; }
 
     public string PhotoUrl { get; set; }
+    public string KnownAs { get; set; }
 }
 

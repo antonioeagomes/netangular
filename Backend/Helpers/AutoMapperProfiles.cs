@@ -21,6 +21,7 @@ public class AutoMapperProfiles : Profile
 
         CreateMap<Photo, PhotoDto>();
         CreateMap<MemberUpdateDTO, AppUser>();
+        CreateMap<UserToRegisterDTO, AppUser>();
     }
 
 }
