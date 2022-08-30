@@ -8,6 +8,7 @@ using Backend.Data;
 using Backend.DTO;
 using Backend.Entities;
 using Backend.Extensions;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,13 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers() => Ok(await _userRepository.GetMembersAsync());
+    public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery] UserParams userParams)
+    {
+        var users = await _userRepository.GetMembersAsync(userParams);
+        Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
+
+        return Ok(users);
+    }
 
     [HttpGet("{username}", Name = "GetUser")]
     public async Task<ActionResult<MemberDTO>> GetUser(string username) => Ok(await _userRepository.GetMemberAsync(username.ToLower()));
@@ -103,13 +110,13 @@ public class UsersController : BaseApiController
 
         if (photo == null) return NotFound();
 
-        if (photo.IsMain) return BadRequest("Cannot delete the main");        
+        if (photo.IsMain) return BadRequest("Cannot delete the main");
 
         if (!string.IsNullOrEmpty(photo.PublicId))
         {
             var result = await _photoService.DeletePhotoAsync(photo.PublicId);
 
-            if(result.Error != null) return BadRequest(result.Error.Message);
+            if (result.Error != null) return BadRequest(result.Error.Message);
         }
 
         user.Photos.Remove(photo);

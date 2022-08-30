@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Backend.DTO;
 using Backend.Entities;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,8 +29,14 @@ public class UserRepository : IUserRepository
                 .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
-    public async Task<IEnumerable<MemberDTO>> GetMembersAsync() => await _context.Users
-                .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider).ToListAsync();
+    public async Task<PagedList<MemberDTO>> GetMembersAsync(UserParams userParams)
+    {
+        var query = _context.Users
+            .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
+            .AsNoTracking();
+
+        return await PagedList<MemberDTO>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
+    }
 
     public async Task<AppUser> GetUserByIdAsync(int id) => await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     public async Task<AppUser> GetUserByUsernameAsync(string username) => await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.UserName == username);
