@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
+import { PaginatedResult } from '../_models/pagination';
+import { UserParams } from '../_models/userParams';
 
 
 @Injectable({
@@ -14,15 +16,29 @@ export class MembersService {
 
   constructor(private http: HttpClient) { }
 
-  getMembers() {
-    if (this.members.length > 0) return of(this.members);
+  getMembers(userParams: UserParams) {
 
-    return this.http.get<Member[]>(`${this.baseUrl}users`).pipe(
-      map(members => {
-        this.members = members;
-        return members;
+    let params = this.getPAginationHeader(userParams.pageNumber, userParams.pageSize);
+    params = params.append('maxAge', userParams.maxAge.toString());
+    params = params.append('minAge', userParams.minAge.toString());
+
+
+    return this.getPaginatedResult<Member[]>(`${this.baseUrl}users`, params);
+  }
+
+  private getPaginatedResult<T>(url, params) {
+    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
+   
+    return this.http.get<T>(url, { observe: 'response', params }).pipe(
+      map(response => {
+        paginatedResult.result = response.body;
+        const pagination = response.headers.get("Pagination");
+        if (!!pagination) {
+          paginatedResult.pagination = JSON.parse(pagination);
+        }
+        return paginatedResult;
       })
-    )
+    );
   }
 
   getMember(username: string) {
@@ -48,6 +64,16 @@ export class MembersService {
 
   deletePhoto(photoId: number) {
     return this.http.delete(`${this.baseUrl}users/delete-photo/${photoId}`)
+  }
+
+  private getPAginationHeader(page?: number, itemsPerPage?: number) {
+    let params = new HttpParams();
+
+    params = params.append('pageNumber', page.toString());
+    params = params.append('pageSize', itemsPerPage.toString());
+
+    return params;
+
   }
 
 }

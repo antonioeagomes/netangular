@@ -33,6 +33,9 @@ public class UsersController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery] UserParams userParams)
     {
+        var user = await GetLoggedUser();
+        userParams.CurrentUsername = user.UserName;
+
         var users = await _userRepository.GetMembersAsync(userParams);
         Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
