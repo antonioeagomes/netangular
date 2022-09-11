@@ -23,7 +23,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     }),
     TabsModule.forRoot(),
     PaginationModule.forRoot(),
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot()    
   ],
   exports: [BsDropdownModule, ButtonsModule, ToastrModule, NgxGalleryModule, FileUploadModule, BsDatepickerModule, PaginationModule, TabsModule]
 })
