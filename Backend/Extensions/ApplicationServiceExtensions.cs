@@ -37,6 +37,7 @@ public static class ApplicationServiceExtensions
 
     public static IServiceCollection AddDependencyInjections(this IServiceCollection services)
     {
+        services.AddScoped<LogUserActivity>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPhotoService, PhotoService>();

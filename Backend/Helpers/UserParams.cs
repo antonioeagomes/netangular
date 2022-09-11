@@ -18,4 +18,6 @@ public class UserParams
 
     public int MaxAge { get; set; } = 150;
 
+    public string OrderBy { get; set; } = "lastActive";
+
 }
