@@ -12,7 +12,11 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddDependencyInjections();
 
 builder.Services.AddControllers();
-builder.Services.AddCors();
+builder.Services.AddCors(setup =>
+    {
+        setup.AddPolicy("AngularLocalPolicy",
+        config => { config.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); });
+    });
 
 builder.Services.AddIdentityServices(builder.Configuration);
 
@@ -28,7 +32,8 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+// app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+app.UseCors("AngularLocalPolicy");
 
 app.UseAuthentication();
 
