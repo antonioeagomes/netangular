@@ -129,8 +129,6 @@ public class UsersController : BaseApiController
         return BadRequest("Failed to delete");
     }
 
-
-
     private async Task<AppUser> GetLoggedUser() => await _userRepository.GetUserByUsernameAsync(User.GetUsername());
 
 

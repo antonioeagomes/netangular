@@ -16,8 +16,6 @@ namespace Backend.Controllers;
 [Authorize]
 public class LikesController : BaseApiController
 {
-    private readonly ILogger<LikesController> _logger;
-
     private readonly IUserRepository _userRepository;
     private readonly ILikesRepository _likesRepository;
     public LikesController(IUserRepository userRepository, ILikesRepository likesRepository)
