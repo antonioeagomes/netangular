@@ -33,7 +33,9 @@ namespace Backend.Data
 
         public async Task<Message> GetMessage(int id)
         {
-            return await _context.Messages.FindAsync(id);
+            return await _context.Messages
+                        .Include(u => u.Sender).Include(u => u.Recipient)
+                        .SingleOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<PagedList<MessageDTO>> GetMessagesForUser(MessageParams messageParams)
@@ -42,9 +44,9 @@ namespace Backend.Data
 
             query = messageParams.Container switch 
             {
-                "Inbox" => query.Where(u => u.Recipient.UserName == messageParams.Username),
-                "Outbox"=> query.Where(u => u.Sender.UserName == messageParams.Username),
-                _ => query.Where(u => u.Recipient.UserName == messageParams.Username && u.ReadAt == null)
+                "Inbox" => query.Where(u => u.Recipient.UserName == messageParams.Username && !u.RecipientDeleted),
+                "Outbox"=> query.Where(u => u.Sender.UserName == messageParams.Username && !u.SenderDeleted),
+                _ => query.Where(u => u.Recipient.UserName == messageParams.Username && !u.RecipientDeleted && u.ReadAt == null)
             };
 
             var messages = query.ProjectTo<MessageDTO>(_mapper.ConfigurationProvider);
@@ -58,9 +60,9 @@ namespace Backend.Data
             var messages = await _context.Messages
             .Include(u => u.Sender).ThenInclude(p => p.Photos)
             .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-                .Where(m => (m.Recipient.UserName == currentUsername
+                .Where(m => (m.Recipient.UserName == currentUsername && !m.RecipientDeleted
                     && m.Sender.UserName == recipientUsername)
-                    || (m.Recipient.UserName == recipientUsername
+                    || (m.Recipient.UserName == recipientUsername && !m.SenderDeleted
                     && m.Sender.UserName == currentUsername))
                 .OrderByDescending(m => m.SentAt)
                 .ToListAsync();
