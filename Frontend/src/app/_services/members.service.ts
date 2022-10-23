@@ -46,7 +46,7 @@ export class MembersService {
       return of(response);
     }
 
-    let params = this.getPAginationHeader(userParams.pageNumber, userParams.pageSize);
+    let params = getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
 
     params = params.append('maxAge', userParams.maxAge.toString());
     params = params.append('minAge', userParams.minAge.toString());
@@ -111,16 +111,4 @@ export class MembersService {
     params = params.append('predicate', predicate);
     return getPaginatedResult<Partial<Member[]>>(`${this.baseUrl}likes`, params, this.http);
   }
-
-
-  private getPAginationHeader(page?: number, itemsPerPage?: number) {
-    let params = new HttpParams();
-
-    params = params.append('pageNumber', page.toString());
-    params = params.append('pageSize', itemsPerPage.toString());
-
-    return params;
-
-  }
-
 }

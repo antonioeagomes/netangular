@@ -14,12 +14,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers;
 
 [Authorize]
-public class MessageController : BaseApiController
+public class MessagesController : BaseApiController
 {
     private readonly IUserRepository _userRepository;
     private readonly IMessageRepository _messageRepository;
     private readonly IMapper _mapper;
-    public MessageController(IUserRepository userRepository, IMessageRepository messageRepository, IMapper mapper)
+    public MessagesController(IUserRepository userRepository, IMessageRepository messageRepository, IMapper mapper)
     {
         _messageRepository = messageRepository;
         _userRepository = userRepository;
