@@ -1,36 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Backend.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Data;
 
 public class Seed
 {
-    public static async Task SeedUsers(DataContext context) {
-        if(await context.Users.AnyAsync()) return;
+    public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+    {
+        if (await userManager.Users.AnyAsync()) return;
 
         var userData = await System.IO.File.ReadAllTextAsync("Data/UserSeedData.json");
 
         var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
+        if(users == null) return;
+
         foreach (var item in users)
         {
-            using var hmac = new HMACSHA512();
-            
             item.UserName = item.UserName.ToLower();
-            item.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
-            item.PasswordSalt = hmac.Key;
 
-            context.Users.Add(item);
+            await userManager.CreateAsync(item, "Pa$$w0rd");
         }
-
-        await context.SaveChangesAsync();
-
     }
 }
