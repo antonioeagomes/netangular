@@ -15,13 +15,32 @@ public class Seed
 
         var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
-        if(users == null) return;
+        if (users == null) return;
 
-        foreach (var item in users)
+        var roles = new List<AppRole>()
         {
-            item.UserName = item.UserName.ToLower();
+            new AppRole{Name = "Member"},
+            new AppRole{Name = "Admin"},
+            new AppRole{Name = "Moderator"}
+        };
 
-            await userManager.CreateAsync(item, "Pa$$w0rd");
+        foreach (var role in roles)
+        {
+            await roleManager.CreateAsync(role);
         }
+
+        foreach (var user in users)
+        {
+            user.UserName = user.UserName.ToLower();
+
+            await userManager.CreateAsync(user, "Pa$$w0rd");
+            await userManager.AddToRoleAsync(user, "Member");
+        }
+
+        var admin = new AppUser { UserName = "admin" };
+
+        await userManager.CreateAsync(admin, "Pa$$w0rd");
+        await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
+
     }
 }

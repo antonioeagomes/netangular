@@ -39,11 +39,16 @@ public class AccountController : BaseApiController
 
         if (!result.Succeeded) return BadRequest(result.Errors);
 
+        var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+        if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+
+
         return Ok(
             new UserDTO
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos?.FirstOrDefault(p => p.IsMain)?.Url,
                 KnownAs = user.KnownAs
             });
@@ -62,12 +67,12 @@ public class AccountController : BaseApiController
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, userToLogin.Password, false);
 
-        if (!result.Succeeded) return Unauthorized();
+        if (!result.Succeeded) return Unauthorized();        
 
         return Ok(new UserDTO
         {
             Username = user.UserName,
-            Token = _tokenService.CreateToken(user),
+            Token = await _tokenService.CreateToken(user),
             PhotoUrl = user.Photos?.FirstOrDefault(p => p.IsMain)?.Url,
             KnownAs = user.KnownAs
         });

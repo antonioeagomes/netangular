@@ -30,6 +30,7 @@ public class UsersController : BaseApiController
         _mapper = mapper;
     }
 
+    // [Authorize(Roles = "Member")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery] UserParams userParams)
     {
@@ -42,6 +43,7 @@ public class UsersController : BaseApiController
         return Ok(users);
     }
 
+    // [Authorize(Roles = "Admin")]
     [HttpGet("{username}", Name = "GetUser")]
     public async Task<ActionResult<MemberDTO>> GetUser(string username) => Ok(await _userRepository.GetMemberAsync(username.ToLower()));
 
