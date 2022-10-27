@@ -29,6 +29,7 @@ import { TimeagoModule } from 'ngx-timeago';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
     TextInputComponent,
     DateInputComponent,
     MemberMessagesComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,
