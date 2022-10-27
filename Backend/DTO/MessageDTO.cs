@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Backend.DTO;
@@ -17,6 +18,12 @@ public class MessageDTO
     public string Content { get; set; }
     public DateTime SentAt { get; set; }
     public DateTime? ReadAt { get; set; }
+    
+    [JsonIgnore]
+    public bool SenderDeleted { get; set; }
+    
+    [JsonIgnore]
+    public bool RecipientDeleted { get; set; }
 
 }
 
