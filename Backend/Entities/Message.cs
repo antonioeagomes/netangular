@@ -15,7 +15,7 @@ public class Message
     public string RecipientUsername { get; set; }
     public AppUser Recipient { get; set; }
     public string Content { get; set; }
-    public DateTime SentAt { get; set; } = DateTime.Now;
+    public DateTime SentAt { get; set; } = DateTime.UtcNow;
     public DateTime? ReadAt { get; set; }
     public bool SenderDeleted { get; set; }
     public bool RecipientDeleted { get; set; }

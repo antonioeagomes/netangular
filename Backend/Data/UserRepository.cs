@@ -13,13 +13,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Data;
 public class UserRepository : IUserRepository
 {
-    private readonly ILogger<AppUser> _logger;
     private readonly DataContext _context;
     private readonly IMapper _mapper;
 
-    public UserRepository(DataContext context, ILogger<AppUser> logger, IMapper mapper)
+    public UserRepository(DataContext context,  IMapper mapper)
     {
-        _logger = logger;
         _context = context;
         _mapper = mapper;
     }
