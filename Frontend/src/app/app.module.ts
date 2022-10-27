@@ -27,6 +27,8 @@ import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { TimeagoModule } from 'ngx-timeago';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
 
 
 @NgModule({
@@ -46,7 +48,8 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     PhotoEditorComponent,
     TextInputComponent,
     DateInputComponent,
-    MemberMessagesComponent
+    MemberMessagesComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +60,8 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     SharedModule,
     NgxSpinnerModule,
     ReactiveFormsModule,
-    TimeagoModule.forRoot()        
+    TimeagoModule.forRoot(),
+    ModalModule.forRoot()        
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
