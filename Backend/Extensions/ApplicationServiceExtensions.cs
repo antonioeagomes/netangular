@@ -73,6 +73,11 @@ public static class ApplicationServiceExtensions
             };
         });
 
+        services.AddAuthorization(opt => {
+            opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+            opt.AddPolicy("ModeratePhotosRole", policy => policy.RequireRole("Admin", "Moderator"));
+        });
+
         return services;
     }
 
