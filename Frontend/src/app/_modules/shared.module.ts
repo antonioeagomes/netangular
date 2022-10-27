@@ -8,7 +8,8 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
-
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TimeagoModule } from 'ngx-timeago';
 
 @NgModule({
   declarations: [],
@@ -16,6 +17,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     CommonModule,
     NgxGalleryModule,
     FileUploadModule,
+    ModalModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({
@@ -23,8 +25,9 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     }),
     TabsModule.forRoot(),
     PaginationModule.forRoot(),
-    ButtonsModule.forRoot()    
+    ButtonsModule.forRoot(),
+    TimeagoModule.forRoot()
   ],
-  exports: [BsDropdownModule, ButtonsModule, ToastrModule, NgxGalleryModule, FileUploadModule, BsDatepickerModule, PaginationModule, TabsModule]
+  exports: [BsDropdownModule, ButtonsModule, ToastrModule, NgxGalleryModule, FileUploadModule, BsDatepickerModule, PaginationModule, TabsModule, ModalModule, TimeagoModule]
 })
 export class SharedModule { }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Backend.DTO;
 using Backend.Entities;
 using Backend.Extensions;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ public class LikesController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<LikeDTO>>> GetUserLikes([FromQuery] Helpers.LikesParams likesParams)
+    public async Task<ActionResult<IEnumerable<LikeDTO>>> GetUserLikes([FromQuery] LikesParams likesParams)
     {
         likesParams.UserId = User.GetUserId();
         var users = await _unityOfWork.LikesRepository.GetUserLikes(likesParams);
