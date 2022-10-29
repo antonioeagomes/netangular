@@ -2,6 +2,7 @@ using Backend.Data;
 using Backend.Entities;
 using Backend.Extensions;
 using Backend.Middleware;
+using Backend.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +18,16 @@ builder.Services.AddControllers();
 builder.Services.AddCors(setup =>
     {
         setup.AddPolicy("AngularLocalPolicy",
-        config => { config.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); });
+        config => { config.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); 
+            });
     });
 
 builder.Services.AddIdentityServices(builder.Configuration);
+
+builder.Services.AddSignalR();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -42,6 +49,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<PresenceHub>("hubs/presence");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
