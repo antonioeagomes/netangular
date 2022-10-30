@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Backend.SignalR;
 
 namespace Backend.Extensions;
 
@@ -19,7 +21,7 @@ public static class ApplicationServiceExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
-
+        services.AddSingleton<PresenceTracker>();
         services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
 
         services.AddDbContext<DataContext>(options =>

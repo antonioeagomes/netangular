@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   NgxGalleryAnimation,
@@ -7,39 +7,53 @@ import {
 } from '@kolkov/ngx-gallery';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs';
 import { Member } from 'src/app/_models/member';
 import { Message } from 'src/app/_models/message';
+import { User } from 'src/app/_models/user';
+import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 import { MessageService } from 'src/app/_services/message.service';
+import { PresenceService } from 'src/app/_services/presence.service';
 
 @Component({
   selector: 'app-member-detail',
   templateUrl: './member-detail.component.html',
   styleUrls: ['./member-detail.component.css'],
 })
-export class MemberDetailComponent implements OnInit {
-  @ViewChild('memberTabs', {static: true}) memberTabs: TabsetComponent;
+export class MemberDetailComponent implements OnInit, OnDestroy {
+  @ViewChild('memberTabs', { static: true }) memberTabs: TabsetComponent;
   member: Member;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
   activeTab: TabDirective;
   messages: Message[] = [];
+  user: User;
 
   constructor(
     private memberService: MembersService,
     private route: ActivatedRoute,
     private messageService: MessageService,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    public presence: PresenceService,
+    private accountService: AccountService
+  ) {
+    this.accountService.currentUser$
+      .pipe(take(1))
+      .subscribe((user) => (this.user = user));
+  }
+  ngOnDestroy(): void {
+    this.messageService.stopHubConnection();
+  }
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => {
+    this.route.data.subscribe((data) => {
       this.member = data.member;
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       params.tab ? this.selectTab(params.tab) : this.selectTab(0);
-    })
+    });
 
     this.galleryOptions = [
       {
@@ -81,7 +95,9 @@ export class MemberDetailComponent implements OnInit {
     this.activeTab = data;
 
     if (this.activeTab.heading === 'Messages' && this.messages.length === 0) {
-      this.loadMessages();
+      this.messageService.createHubConnection(this.user, this.member.username);
+    } else {
+      this.messageService.stopHubConnection();
     }
   }
 
@@ -89,7 +105,7 @@ export class MemberDetailComponent implements OnInit {
     this.memberTabs.tabs[tabId].active = true;
   }
 
-  addLike(){
+  addLike() {
     this.memberService.addLike(this.member.username).subscribe(() => {
       this.toastr.success(`Like ${this.member.knownAs}`);
     });

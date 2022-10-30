@@ -18,7 +18,7 @@ export class MessagesComponent implements OnInit {
   loading = false;
 
   constructor(
-    private messageService: MessageService,
+    public messageService: MessageService,
     private confirmService: ConfirmService
   ) {}
 
