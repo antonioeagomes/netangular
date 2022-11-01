@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   NgxGalleryAnimation,
   NgxGalleryImage,
@@ -36,11 +36,13 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private toastr: ToastrService,
     public presence: PresenceService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private router: Router
   ) {
     this.accountService.currentUser$
       .pipe(take(1))
       .subscribe((user) => (this.user = user));
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
   ngOnDestroy(): void {
     this.messageService.stopHubConnection();
@@ -49,10 +51,10 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.member = data.member;
-    });
+    });    
 
     this.route.queryParams.subscribe((params) => {
-      params.tab ? this.selectTab(params.tab) : this.selectTab(0);
+      params?.tab ? this.selectTab(Number(params.tab)) : this.selectTab(0);
     });
 
     this.galleryOptions = [
@@ -83,14 +85,6 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     return imageUrls;
   }
 
-  loadMessages() {
-    this.messageService
-      .getMessageThread(this.member.username)
-      .subscribe((messages) => {
-        this.messages = messages;
-      });
-  }
-
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
 
@@ -102,7 +96,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   }
 
   selectTab(tabId: number) {
-    this.memberTabs.tabs[tabId].active = true;
+    this.memberTabs.tabs[tabId].active  = true;
   }
 
   addLike() {

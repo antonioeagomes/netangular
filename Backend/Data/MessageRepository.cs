@@ -45,14 +45,14 @@ namespace Backend.Data
                 .ProjectTo<MessageDTO>(_mapper.ConfigurationProvider)
                 .AsQueryable();
 
-            query = messageParams.Container switch 
+            query = messageParams.Container switch
             {
                 "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username && !u.RecipientDeleted),
-                "Outbox"=> query.Where(u => u.SenderUsername == messageParams.Username && !u.SenderDeleted),
+                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username && !u.SenderDeleted),
                 _ => query.Where(u => u.RecipientUsername == messageParams.Username && !u.RecipientDeleted && u.ReadAt == null)
             };
 
-            return await PagedList<MessageDTO>.CreateAsync(query, messageParams.PageNumber,messageParams.PageSize);
+            return await PagedList<MessageDTO>.CreateAsync(query, messageParams.PageNumber, messageParams.PageSize);
 
         }
 
@@ -66,11 +66,11 @@ namespace Backend.Data
                 .OrderByDescending(m => m.SentAt)
                 .ProjectTo<MessageDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-            
-            var unreadMessages = messages.Where(m => m.ReadAt == null 
+
+            var unreadMessages = messages.Where(m => m.ReadAt == null
                 && m.RecipientUsername == currentUsername).ToList();
 
-            if (unreadMessages.Any()) 
+            if (unreadMessages.Any())
             {
                 foreach (var message in unreadMessages)
                 {
@@ -81,6 +81,23 @@ namespace Backend.Data
             }
 
             return messages;
+        }
+
+        public void AddGroup(Group group)
+        {
+            _context.Groups.Add(group);
+        }
+        public void RemoveConnection(Connection connection)
+        {
+            _context.Connections.Remove(connection);
+        }
+        public async Task<Connection> GetConnection(string connectionId)
+        {
+            return await _context.Connections.FindAsync(connectionId);
+        }
+        public async Task<Group> GetMessageGroup(string groupName)
+        {
+            return await _context.Groups.Include(c => c.Connections).FirstOrDefaultAsync(x => x.Name == groupName);
         }
     }
 }

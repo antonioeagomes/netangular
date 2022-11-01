@@ -22,7 +22,7 @@ export class MessageService {
   createHubConnection(user: User, otherUsername: string) {
     // this.busyService.busy();
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(this.hubUrl + 'message?user=' + otherUsername, {
+      .withUrl(`${this.hubUrl}message?user=${otherUsername}`, {
         accessTokenFactory: () => user.token
       })
       .withAutomaticReconnect()
@@ -74,8 +74,9 @@ export class MessageService {
     return this.http.get<Message[]>(this.baseUrl + 'messages/thread/' + username);
   }
 
-  sendMessage(username: string, content: string) {
-    return this.http.post<Message>(this.baseUrl + 'messages', {recipientUsername: username, content})
+  async sendMessage(username: string, content: string) {
+    return this.hubConnection.invoke('SendMessage', {recipientUsername: username, content})
+    .catch((e) => console.log(e));
   }
 
   deleteMessage(id: number) {
