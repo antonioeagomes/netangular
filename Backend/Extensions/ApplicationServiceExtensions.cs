@@ -22,13 +22,36 @@ public static class ApplicationServiceExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
         services.AddSingleton<PresenceTracker>();
-        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));        
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
 
         services.AddDbContext<DataContext>(options =>
             {
-                // var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                 string connStr;
-                connStr = config.GetConnectionString("DefaultConnection");
+
+                if (env == "Development")
+                {
+                    // Use connection string from file.
+                    connStr = config.GetConnectionString("DefaultConnection");
+                }
+                else
+                {
+                    // Use connection string provided at runtime by Heroku.
+                    var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+                    // Parse connection URL to connection string for Npgsql
+                    connUrl = connUrl.Replace("postgres://", string.Empty);
+                    var pgUserPass = connUrl.Split("@")[0];
+                    var pgHostPortDb = connUrl.Split("@")[1];
+                    var pgHostPort = pgHostPortDb.Split("/")[0];
+                    var pgDb = pgHostPortDb.Split("/")[1];
+                    var pgUser = pgUserPass.Split(":")[0];
+                    var pgPass = pgUserPass.Split(":")[1];
+                    var pgHost = pgHostPort.Split(":")[0];
+                    var pgPort = pgHostPort.Split(":")[1];
+
+                    connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;TrustServerCertificate=True";
+                }
 
                 options.UseNpgsql(connStr);
 
@@ -72,16 +95,16 @@ public static class ApplicationServiceExtensions
                     ValidateAudience = false
                 };
 
-                opt.Events = new JwtBearerEvents 
+                opt.Events = new JwtBearerEvents
                 {
-                    OnMessageReceived = context => 
+                    OnMessageReceived = context =>
                     {
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
 
-                        if(!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
                             context.Token = accessToken;
-                        
+
                         return Task.CompletedTask;
                     }
                 };
@@ -89,7 +112,8 @@ public static class ApplicationServiceExtensions
 
             });
 
-        services.AddAuthorization(opt => {
+        services.AddAuthorization(opt =>
+        {
             opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
             opt.AddPolicy("ModeratePhotosRole", policy => policy.RequireRole("Admin", "Moderator"));
         });
