@@ -22,7 +22,7 @@ public static class ApplicationServiceExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
         services.AddSingleton<PresenceTracker>();
-        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));        
 
         services.AddDbContext<DataContext>(options =>
             {
@@ -30,7 +30,7 @@ public static class ApplicationServiceExtensions
                 string connStr;
                 connStr = config.GetConnectionString("DefaultConnection");
 
-                options.UseSqlite(connStr);
+                options.UseNpgsql(connStr);
 
             });
 

@@ -63,7 +63,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .WithMany(m => m.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder.ApplyUtcDateTimeConverter();
+         builder.ApplyUtcDateTimeConverter();
     }
 
 }
