@@ -97,7 +97,16 @@ namespace Backend.Data
         }
         public async Task<Group> GetMessageGroup(string groupName)
         {
-            return await _context.Groups.Include(c => c.Connections).FirstOrDefaultAsync(x => x.Name == groupName);
+            return await _context.Groups.Include(c => c.Connections)
+                .FirstOrDefaultAsync(x => x.Name == groupName);
+        }
+
+        public async Task<Group> GetGroupFromConnection(string connectionId)
+        {
+            return await _context.Groups
+                .Include(c => c.Connections)
+                .Where(c => c.Connections.Any(x => x.ConnectionId == connectionId))
+                .FirstOrDefaultAsync();
         }
     }
 }
