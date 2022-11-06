@@ -28,7 +28,8 @@ public static class ApplicationServiceExtensions
             {
                 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                 string connStr;
-
+                connStr = config.GetConnectionString("DefaultConnection");
+                /** 
                 if (env == "Development")
                 {
                     // Use connection string from file.
@@ -52,8 +53,9 @@ public static class ApplicationServiceExtensions
 
                     connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;TrustServerCertificate=True";
                 }
+                 */                
 
-                options.UseNpgsql(connStr);
+                options.UseSqlServer(connStr);
 
             });
 
